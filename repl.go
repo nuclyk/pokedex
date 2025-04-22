@@ -14,14 +14,14 @@ func startRepl() {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
 		text := scanner.Text()
-		command := cleanInput(text)
+		words := cleanInput(text)
 
-		if len(command) == 0 {
+		if len(words) == 0 {
 			continue
 		}
 
-		if value, ok := commands[command[0]]; ok {
-			err := value.callback()
+		if cmd, ok := commands[words[0]]; ok {
+			err := cmd.callback()
 			if err != nil {
 				fmt.Println(err)
 			}
