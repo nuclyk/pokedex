@@ -1,8 +1,8 @@
 package main
 
-import "github.com/nuclyk/pokedex/internal/pck"
+import "github.com/internal/pokeapi"
 
 func main() {
-	pck.Hi()
+	pokeapi.GetLocationAreas()
 	startRepl()
 }
