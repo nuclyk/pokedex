@@ -7,7 +7,18 @@ import (
 	"strings"
 )
 
+const baseUrl = "https://pokeapi.co/api/v2/location-area/"
+
+type config struct {
+	Next     string
+	Previous string
+}
+
 func startRepl() {
+	config := config{
+		Next:     baseUrl,
+		Previous: "",
+	}
 	scanner := bufio.NewScanner(os.Stdin)
 	commands := initialiseCommands()
 	for {
@@ -21,7 +32,7 @@ func startRepl() {
 		}
 
 		if cmd, ok := commands[words[0]]; ok {
-			err := cmd.callback()
+			err := cmd.callback(&config)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -37,7 +48,7 @@ func startRepl() {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 func initialiseCommands() map[string]cliCommand {
@@ -51,6 +62,16 @@ func initialiseCommands() map[string]cliCommand {
 			name:        "help",
 			description: "Display a help message",
 			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Show area locations",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Show previous area locations",
+			callback:    commandMapb,
 		},
 	}
 }
