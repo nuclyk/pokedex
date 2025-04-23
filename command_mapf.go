@@ -7,7 +7,7 @@ import (
 	"github.com/nuclyk/pokedex/internal/pokeapi"
 )
 
-func commandMapf(config *config) error {
+func commandMapf(config *config, arg string) error {
 	areas, err := pokeapi.GetLocationAreas(config.Next)
 	if err != nil {
 		log.Fatal(err)

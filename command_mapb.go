@@ -7,7 +7,7 @@ import (
 	"github.com/nuclyk/pokedex/internal/pokeapi"
 )
 
-func commandMapb(config *config) error {
+func commandMapb(config *config, arg string) error {
 
 	if config.Previous == "" {
 		fmt.Println("you're on the first page")

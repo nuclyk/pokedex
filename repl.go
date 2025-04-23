@@ -27,12 +27,17 @@ func startRepl() {
 		text := scanner.Text()
 		words := cleanInput(text)
 
+		var arg string
+		if len(words) > 1 {
+			arg = words[1]
+		}
+
 		if len(words) == 0 {
 			continue
 		}
 
 		if cmd, ok := commands[words[0]]; ok {
-			err := cmd.callback(&config)
+			err := cmd.callback(&config, arg)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -48,7 +53,7 @@ func startRepl() {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, string) error
 }
 
 func initialiseCommands() map[string]cliCommand {
@@ -72,6 +77,11 @@ func initialiseCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "Show previous area locations",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore",
+			description: "Explore a location",
+			callback:    commandExplore,
 		},
 	}
 }

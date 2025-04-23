@@ -23,6 +23,35 @@ type LocationAreas struct {
 	} `json:"results"`
 }
 
+func GetAreaPokemons(url string) (pokemonEncounters, error) {
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return pokemonEncounters{}, nil
+	}
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return pokemonEncounters{}, nil
+	}
+
+	var encounters pokemonEncounters
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return pokemonEncounters{}, nil
+	}
+
+	err = json.Unmarshal(body, &encounters)
+	if err != nil {
+		return pokemonEncounters{}, nil
+	}
+
+	return encounters, nil
+
+}
+
 func GetLocationAreas(url string) (LocationAreas, error) {
 
 	cache := pokecache.NewCache(interval)
