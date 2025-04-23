@@ -5,11 +5,15 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
+
+	"github.com/nuclyk/pokedex/internal/pokecache"
 )
 
 const baseUrl = "https://pokeapi.co/api/v2/"
+const interval = time.Second * 5
 
-type locationAreas struct {
+type LocationAreas struct {
 	Count    int    `json:"count"`
 	Next     string `json:"next"`
 	Previous string `json:"previous"`
@@ -19,25 +23,36 @@ type locationAreas struct {
 	} `json:"results"`
 }
 
-func GetLocationAreas(url string) (locationAreas, error) {
-	res, err := http.Get(url)
-	if err != nil {
-		log.Fatal(err)
-	}
+func GetLocationAreas(url string) (LocationAreas, error) {
 
-	body, err := io.ReadAll(res.Body)
+	cache := pokecache.NewCache(interval)
+	entry, ok := cache.Get(url)
+	var areas LocationAreas
 
-	if res.StatusCode > 299 {
-		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
+	if ok {
+		err := json.Unmarshal(entry, &areas)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		res, err := http.Get(url)
+		if err != nil {
+			log.Fatal(err)
+		}
 
-	var areas locationAreas
-	err = json.Unmarshal(body, &areas)
-	if err != nil {
-		log.Fatal(err)
+		body, err := io.ReadAll(res.Body)
+
+		if res.StatusCode > 299 {
+			log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = json.Unmarshal(body, &areas)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	return areas, nil

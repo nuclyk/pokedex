@@ -8,7 +8,6 @@ import (
 )
 
 func commandMapf(config *config) error {
-
 	areas, err := pokeapi.GetLocationAreas(config.Next)
 	if err != nil {
 		log.Fatal(err)
