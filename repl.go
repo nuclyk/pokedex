@@ -66,7 +66,7 @@ func initialiseCommands() map[string]cliCommand {
 		"map": {
 			name:        "map",
 			description: "Show area locations",
-			callback:    commandMap,
+			callback:    commandMapf,
 		},
 		"mapb": {
 			name:        "mapb",
